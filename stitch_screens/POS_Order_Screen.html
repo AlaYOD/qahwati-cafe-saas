@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Qahwati POS - Order System</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#866765",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#1a1818",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Work Sans', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #393332;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen overflow-hidden">
+<div class="flex flex-col h-screen">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between px-6 py-3 border-b border-primary/20 bg-background-light dark:bg-background-dark/50 backdrop-blur-md">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xl">local_cafe</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight">Qahwati <span class="text-primary">POS</span></h1>
+</div>
+<div class="relative w-64">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 text-sm">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2 bg-slate-200/50 dark:bg-primary/10 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary placeholder-slate-500" placeholder="Search menu items..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-lg bg-slate-200 dark:bg-primary/10 hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-xl">notifications</span>
+</button>
+<button class="p-2 rounded-lg bg-slate-200 dark:bg-primary/10 hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-xl">settings</span>
+</button>
+<div class="h-8 w-[1px] bg-primary/20 mx-2"></div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-semibold">Sarah Jenkins</p>
+<p class="text-[10px] text-primary">Manager</p>
+</div>
+<div class="size-9 rounded-full bg-primary/30 flex items-center justify-center border border-primary/50 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Profile picture of a female staff member" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUdc650npYbyjdOQ3A_rEOYJSVlU3MYIPDBbjXfE2fmUc1nMhewvg4Ec0oKuRsfHsxqEd9Jz7BnYgRo2Hv7kBc2QoxJfKRmCOBgzpdaSPZPDZ22DGIXMn61pP7jK66jj2Sk0ZhtT5ka_sVlm_ortCqRHYeFNPNSBDb5ThsJ4dIjYEiljqCQVC5QoPBTHqKZfZSzl2c2ey-4Gv-JJoQAApuuKiT-r2EVEeoECup0i5uwY_V2CFthPBe4wvkxOCC1ln9Dt4xsfjmZ_0"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="flex flex-1 overflow-hidden">
+<!-- Left Panel: Product Menu (60%) -->
+<section class="w-[60%] flex flex-col border-r border-primary/10 bg-slate-50 dark:bg-background-dark">
+<!-- Category Tabs -->
+<div class="px-6 py-4 flex gap-3 overflow-x-auto no-scrollbar">
+<button class="flex-none px-6 py-2 rounded-full bg-primary text-white font-medium text-sm transition-shadow shadow-lg shadow-primary/20">All Items</button>
+<button class="flex-none px-6 py-2 rounded-full bg-white dark:bg-primary/10 border border-primary/20 text-slate-600 dark:text-slate-300 font-medium text-sm hover:bg-primary/5 transition-colors">Hot Drinks</button>
+<button class="flex-none px-6 py-2 rounded-full bg-white dark:bg-primary/10 border border-primary/20 text-slate-600 dark:text-slate-300 font-medium text-sm hover:bg-primary/5 transition-colors">Cold Drinks</button>
+<button class="flex-none px-6 py-2 rounded-full bg-white dark:bg-primary/10 border border-primary/20 text-slate-600 dark:text-slate-300 font-medium text-sm hover:bg-primary/5 transition-colors">Pastries</button>
+<button class="flex-none px-6 py-2 rounded-full bg-white dark:bg-primary/10 border border-primary/20 text-slate-600 dark:text-slate-300 font-medium text-sm hover:bg-primary/5 transition-colors">Hookah</button>
+<button class="flex-none px-6 py-2 rounded-full bg-white dark:bg-primary/10 border border-primary/20 text-slate-600 dark:text-slate-300 font-medium text-sm hover:bg-primary/5 transition-colors">Breakfast</button>
+</div>
+<!-- Product Grid -->
+<div class="flex-1 overflow-y-auto px-6 pb-6 custom-scrollbar">
+<div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+<!-- Product Card 1 -->
+<div class="bg-white dark:bg-primary/5 border border-primary/10 rounded-xl p-3 hover:border-primary transition-all cursor-pointer group">
+<div class="aspect-square rounded-lg bg-slate-200 dark:bg-primary/10 mb-3 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Freshly brewed espresso in a ceramic cup" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMvkCemODdMO5nD312KU5DSgXMJyCEr8_NXg_SGsOCy4bFsZrljkmqnNyniqOJcIun7SVJKC3zzJMqzFAn-CbQmJNmAN0P1JVUO7f2Ps4yKYbMGEvHZsegBurfWNiBvW0FmODlszJhhqkEI7NOASl0ytVEevxcdo5zvl97JYkTq9d6uFlLApJdpod6pTvo4NTVwrr2-JN4WUkiA9J80sv4Hl4y2EuwC1r-46D_PotOK-HIURVrT5BKUjhnBey1YTACbFDVokOZYtU"/>
+</div>
+<h3 class="font-bold text-sm mb-1">Double Espresso</h3>
+<div class="flex justify-between items-center">
+<span class="text-primary font-bold">$3.50</span>
+<span class="text-[10px] bg-primary/20 px-2 py-0.5 rounded-full text-primary">In Stock</span>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-white dark:bg-primary/5 border border-primary/10 rounded-xl p-3 hover:border-primary transition-all cursor-pointer group">
+<div class="aspect-square rounded-lg bg-slate-200 dark:bg-primary/10 mb-3 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Cappuccino with heart shaped latte art" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChuuxUYPtWj2UI8x5UiISc0jsB1ZeyaJWCn8qNRYJWOzfNuz8HRagUrEnzmHL_3yrx1U6gePrgZtVpRJQdal0JxjdW6nBeOfBxuG5DXXrNknNBEIQTWSNvO7_TWmvJre31A75hIY6xBpBcXeI2tHvYRUk2IaczILKOdgBfgfTz9PpcmX0x9JqzJZWb8OZsOCWHh5dpPUIGORXXSBqscbLr6w2IJeXqMsH6ENI_ren46HGBvim-nrGmpc5Cf5KWgf2iExyTbopASxM"/>
+</div>
+<h3 class="font-bold text-sm mb-1">Cappuccino</h3>
+<div class="flex justify-between items-center">
+<span class="text-primary font-bold">$4.50</span>
+<span class="text-[10px] bg-primary/20 px-2 py-0.5 rounded-full text-primary">Popular</span>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="bg-white dark:bg-primary/5 border border-primary/10 rounded-xl p-3 hover:border-primary transition-all cursor-pointer group border-2 border-primary">
+<div class="aspect-square rounded-lg bg-slate-200 dark:bg-primary/10 mb-3 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Iced latte with layered coffee and milk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtTwS3rPeSEadFy3Hzj75KIjtAJXsngWttCw4s9Yi8h1tvyVeb20V0PPhxC-7o9eng3C5xj4BB-C5DG1VgsJgJ9-4EGFfl3W4TOMloouISmfTQrlwkn9k35RrbZ99zqAiU2oHYSDXM3Ojwx4nmLn8TC_9eF_UZPtNI6tz2oCWmypzXpF0B3hSFMqLn5It6BXuWAzl4U-R4eb6XcJt6tFGhVOq6kL1t3AMJbb8QPhdu1taorzKR0PqHHERfHhHBMX6P1N1TkcR6SAI"/>
+</div>
+<h3 class="font-bold text-sm mb-1">Spanish Iced Latte</h3>
+<div class="flex justify-between items-center">
+<span class="text-primary font-bold">$5.25</span>
+<div class="bg-primary text-white size-5 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px]">check</span>
+</div>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="bg-white dark:bg-primary/5 border border-primary/10 rounded-xl p-3 hover:border-primary transition-all cursor-pointer group">
+<div class="aspect-square rounded-lg bg-slate-200 dark:bg-primary/10 mb-3 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Freshly baked croissant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDNsbcofF5hMvpbNoZJEzib4idrJ5cK3s2Jurxk18Yl3sgHxP45HFJmaoaJV6Ol2hNVXexH9iy8MWTGhdQsdxi0VGpLLtXRQqIFidoTWqIlxPgfUF7mDFm6P2MzVmFEnv7IyU41wBvcDb50hk7MRY8xcevqJ6gjwuvD8oWoswNCteOBhXvEVBlVVy1jeHs4yuAvO-gLawHnV0V9YsARld-vo81JiYwFz1-7BdyD9hsvSJmMNSNx82iATSh7UkJUMYfbtlG_zbFvIU"/>
+</div>
+<h3 class="font-bold text-sm mb-1">Butter Croissant</h3>
+<div class="flex justify-between items-center">
+<span class="text-primary font-bold">$2.75</span>
+<span class="text-[10px] bg-primary/20 px-2 py-0.5 rounded-full text-primary">Fresh</span>
+</div>
+</div>
+<!-- Product Card 5 -->
+<div class="bg-white dark:bg-primary/5 border border-primary/10 rounded-xl p-3 hover:border-primary transition-all cursor-pointer group">
+<div class="aspect-square rounded-lg bg-slate-200 dark:bg-primary/10 mb-3 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Eggs benedict breakfast plate" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSq2rNRH6ugOgPsYOfKgKqzafJxMAKd67LEiN2W_tZSGGy6HjF_avCjfVc00GNQxGl1XZDy10raWxzy9V5_zIyE6QlK9WPqeY-blb0cYRSjW-WpooGgDVryFHtryV5O-X_eXd09kWsFIMn8L2HfO1xMItzKouxALL7ruHR4CwagMwAbtSrmcj_gBIJvdZ2yUxyng9ckuhs46j-qve8BUk_etitx57XJ1AuLQMHeVgu7LhNNigAoIQZ-cchKJrSx4t_WOrPQNXm1zM"/>
+</div>
+<h3 class="font-bold text-sm mb-1">Classic Benedict</h3>
+<div class="flex justify-between items-center">
+<span class="text-primary font-bold">$12.50</span>
+<span class="text-[10px] bg-slate-200 dark:bg-primary/20 px-2 py-0.5 rounded-full text-primary">Bestseller</span>
+</div>
+</div>
+<!-- Product Card 6 -->
+<div class="bg-white dark:bg-primary/5 border border-primary/10 rounded-xl p-3 hover:border-primary transition-all cursor-pointer group">
+<div class="aspect-square rounded-lg bg-slate-200 dark:bg-primary/10 mb-3 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Elegant blue glass hookah" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxxom3ay_2vDpzFG0Y2wCvWk1IWX-E3IvRsuvvPFqym5VKqxKZ0CdUapInLwa64Yzg4pozLYwlaoVcvrlKxpbmrvPNAicdkvBbVmljgk88PzhI4zKJqKkOwYPB3J2gXR9ZeKQP4h5JkMQqYro0TuUrcJMG_WFSsYKHyWEWhfELLs-pKHrI5znackYXtXZOvgzuishTL3_wq7TLzI3qj6ZFA5PyowU3UXhdrXcmsYCHB7TuxZ0RScfaZ8S-PyUXbc94RVnMLZeaT5g"/>
+</div>
+<h3 class="font-bold text-sm mb-1">Grape Mint Hookah</h3>
+<div class="flex justify-between items-center">
+<span class="text-primary font-bold">$18.00</span>
+<span class="text-[10px] bg-primary/20 px-2 py-0.5 rounded-full text-primary">Vip</span>
+</div>
+</div>
+<!-- Product Card 7 -->
+<div class="bg-white dark:bg-primary/5 border border-primary/10 rounded-xl p-3 hover:border-primary transition-all cursor-pointer group">
+<div class="aspect-square rounded-lg bg-slate-200 dark:bg-primary/10 mb-3 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Flat white coffee with latte art" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAV9mM08SukBH8ZFlpYwIUfFlbxkBv17WDH763MbUwefudzxbU14Qyhe6mbEzaI7mNtN_sKiYnIAWXN4ryLujgeFvnjR8wa2yeB5F3OCL-tIH5UUBZvUanJcZ1xFE0zdAUnOf0sHiIndOPCUnMcXeFwsKJMPCeQD6zHK_SC3BC-jrTyKgV4d6mapbmoTHlCCHPCgoVfym-45yAKmrG8uqxPAYyS0H-x9fH1-3vvgpdVVUrt8MMP5Hr_YcOBEWIthK183Yo0MYVzXls"/>
+</div>
+<h3 class="font-bold text-sm mb-1">Flat White</h3>
+<div class="flex justify-between items-center">
+<span class="text-primary font-bold">$4.25</span>
+<span class="text-[10px] bg-primary/20 px-2 py-0.5 rounded-full text-primary">Classic</span>
+</div>
+</div>
+<!-- Product Card 8 -->
+<div class="bg-white dark:bg-primary/5 border border-primary/10 rounded-xl p-3 hover:border-primary transition-all cursor-pointer group">
+<div class="aspect-square rounded-lg bg-slate-200 dark:bg-primary/10 mb-3 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Traditional turkish coffee" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWPC6ULqwtDJCmg27Ex1B3YtQRHQJgK2AvbIp6haVGZFt5rJIvPKp3QP3czVQmh-4HrCIfbD5glmB1c3ytF1R_bXMk1CrDG_aY5BZrrLYClC1johoBCuLaKxhqF0M97elOBwf1OBKu13W3SpBlnyfTAW2X9d3Xvs3u7OY6-8ZirFuz0yQUS5jj4JrWwtYjHqNITWex4kNIJRIbuHGBt8zVgi6py7xC4WGx-Ka5iv8Gdf7kavPVDQv27o6sutMMoRI2rV9gcTnL_sg"/>
+</div>
+<h3 class="font-bold text-sm mb-1">Turkish Coffee</h3>
+<div class="flex justify-between items-center">
+<span class="text-primary font-bold">$3.00</span>
+<span class="text-[10px] bg-primary/20 px-2 py-0.5 rounded-full text-primary">Authentic</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Panel: Current Order (40%) -->
+<section class="w-[40%] flex flex-col bg-white dark:bg-background-dark/30">
+<!-- Order Header -->
+<div class="px-6 py-5 border-b border-primary/10 flex justify-between items-center bg-background-light dark:bg-background-dark">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-primary material-symbols-outlined text-lg">table_restaurant</span>
+<h2 class="font-bold text-lg">Table 12</h2>
+</div>
+<p class="text-xs text-slate-500 font-medium">Order ID: #ORD-882-B</p>
+</div>
+<button class="text-primary font-bold text-xs uppercase tracking-wider hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">delete</span>
+                        Clear Order
+                    </button>
+</div>
+<!-- Scrollable Order List -->
+<div class="flex-1 overflow-y-auto px-6 py-4 custom-scrollbar">
+<div class="space-y-4">
+<!-- Order Item 1 -->
+<div class="flex gap-4">
+<div class="size-16 rounded-lg overflow-hidden flex-none">
+<img class="w-full h-full object-cover" data-alt="Close up of double espresso" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJNSm56-MxEeJ5sd6clkMc3r7O1MZziO1eXDviBss2UbMXm1SzyAbSSEZReB_T8Oe77kyIl56UB_31GLoR9I_dpuQro-lcmvMenuMqEbW-VYahilAJ6B9EJIvpevcigybmlrwtGMDXzLcMSSjpzH--p4uTWdzWzTvANYFq1oV_jr_T-h-s997opZ6suTKlLztN59F68Psc4eZoO5yY07fzpmbvohmHv5yx5LETVKU8h2hh6WEaoDemqS8Xv_Qv3mUJViWZeJ86Z4M"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-semibold text-sm truncate">Double Espresso</h4>
+<span class="font-bold text-sm">$3.50</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3 bg-slate-100 dark:bg-primary/10 rounded-lg px-2 py-1">
+<button class="size-6 flex items-center justify-center bg-white dark:bg-primary/20 rounded shadow-sm hover:bg-primary/30 text-primary transition-colors">
+<span class="material-symbols-outlined text-xs">remove</span>
+</button>
+<span class="text-xs font-bold w-4 text-center">1</span>
+<button class="size-6 flex items-center justify-center bg-white dark:bg-primary/20 rounded shadow-sm hover:bg-primary/30 text-primary transition-colors">
+<span class="material-symbols-outlined text-xs">add</span>
+</button>
+</div>
+<span class="text-xs text-slate-400">Extra Hot</span>
+</div>
+</div>
+</div>
+<!-- Order Item 2 -->
+<div class="flex gap-4">
+<div class="size-16 rounded-lg overflow-hidden flex-none">
+<img class="w-full h-full object-cover" data-alt="Large iced latte" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzvfBWFj_LKJFYZH68rshofLjsFxcMX1p-rxmZpcilnXkyuiqqcSskxdYLxyOmhY2QSgg-vlt23i6jLvMpCQ5_aDyTxoreA7UCo99zH73jaLjD1zxR6bcW8v6fD30wfRIN4E7pMOSc-hfnAeb6UR6GkF_am4KdAbU-r-XZ8moYYkYLQLDPp1Y6QhOMO3zBHUS6ZOVgcNN2uBXrOq2lO5jptcdLLPrC40Vg3FtNL-NS5oRvXJaiqUtr-xD31rAP8WjQylEnX1vfvAU"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-semibold text-sm truncate">Spanish Iced Latte</h4>
+<span class="font-bold text-sm">$10.50</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3 bg-slate-100 dark:bg-primary/10 rounded-lg px-2 py-1">
+<button class="size-6 flex items-center justify-center bg-white dark:bg-primary/20 rounded shadow-sm hover:bg-primary/30 text-primary transition-colors">
+<span class="material-symbols-outlined text-xs">remove</span>
+</button>
+<span class="text-xs font-bold w-4 text-center">2</span>
+<button class="size-6 flex items-center justify-center bg-white dark:bg-primary/20 rounded shadow-sm hover:bg-primary/30 text-primary transition-colors">
+<span class="material-symbols-outlined text-xs">add</span>
+</button>
+</div>
+<span class="text-xs text-slate-400">Large, Oat Milk</span>
+</div>
+</div>
+</div>
+<!-- Order Item 3 -->
+<div class="flex gap-4">
+<div class="size-16 rounded-lg overflow-hidden flex-none">
+<img class="w-full h-full object-cover" data-alt="Hookah details" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChKTgKtWek_r6PoMudhD1Iqc197_aHn9HrnP943ban4-9QiP4DZnnUIjnGJlk1Bm0-huPrMMWGEVsz7brP2-rPEmZeb48F-TpFNwBNVNErK3IVibCqhQ9QJNQYjQdUN356ZtN7dflA4tYEnyQFEzx7H_oliUKw5vbQGh2gSHcHkvT77rCjqh8nwf5c-lq-simFXtepAoJzUF0v7KWUMDFw5yxOfQRicmmPP3wOPwWBR8MF_kc84K-f-AomI8rha-xBitgZr8V3gTo"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-semibold text-sm truncate">Grape Mint Hookah</h4>
+<span class="font-bold text-sm">$18.00</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3 bg-slate-100 dark:bg-primary/10 rounded-lg px-2 py-1">
+<button class="size-6 flex items-center justify-center bg-white dark:bg-primary/20 rounded shadow-sm hover:bg-primary/30 text-primary transition-colors">
+<span class="material-symbols-outlined text-xs">remove</span>
+</button>
+<span class="text-xs font-bold w-4 text-center">1</span>
+<button class="size-6 flex items-center justify-center bg-white dark:bg-primary/20 rounded shadow-sm hover:bg-primary/30 text-primary transition-colors">
+<span class="material-symbols-outlined text-xs">add</span>
+</button>
+</div>
+<span class="text-xs text-slate-400">Disposable Hose</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Order Summary & Checkout -->
+<div class="p-6 bg-slate-50 dark:bg-background-dark border-t border-primary/20">
+<div class="space-y-2 mb-6">
+<div class="flex justify-between text-sm text-slate-500">
+<span>Subtotal</span>
+<span>$32.00</span>
+</div>
+<div class="flex justify-between text-sm text-slate-500">
+<span>Discount (10%)</span>
+<span class="text-emerald-500">-$3.20</span>
+</div>
+<div class="flex justify-between text-sm text-slate-500">
+<span>Tax (5%)</span>
+<span>$1.44</span>
+</div>
+<div class="flex justify-between items-center pt-3 border-t border-primary/10">
+<span class="font-bold text-lg">Grand Total</span>
+<span class="font-bold text-2xl text-primary">$30.24</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3 mb-3">
+<button class="flex items-center justify-center gap-2 py-3 rounded-xl border border-primary/30 hover:bg-primary/5 transition-colors font-semibold text-sm">
+<span class="material-symbols-outlined text-lg">receipt</span>
+                            Print Bill
+                        </button>
+<button class="flex items-center justify-center gap-2 py-3 rounded-xl border border-primary/30 hover:bg-primary/5 transition-colors font-semibold text-sm">
+<span class="material-symbols-outlined text-lg">splitscreen</span>
+                            Split Order
+                        </button>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-xl font-bold text-lg shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-3 active:scale-[0.98]">
+<span class="material-symbols-outlined">payments</span>
+                        Pay &amp; Close Order
+                    </button>
+</div>
+</section>
+</main>
+<!-- Status Bar -->
+<footer class="bg-background-light dark:bg-background-dark/80 px-6 py-2 border-t border-primary/10 flex justify-between items-center text-[10px] text-slate-500 uppercase tracking-widest font-bold">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="size-2 rounded-full bg-emerald-500"></span>
+                    Terminal #1 Active
+                </div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]">wifi</span>
+                    Server Connected
+                </div>
+</div>
+<div>
+                Tuesday, 14th Oct 2023 | 14:45 PM
+            </div>
+</footer>
+</div>
+</body></html>

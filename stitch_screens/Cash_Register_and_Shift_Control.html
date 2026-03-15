@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Qahwati - إدارة الورديات</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<header class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-4 lg:px-12">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center bg-primary rounded-lg p-1.5 text-white">
+<span class="material-symbols-outlined text-2xl">coffee</span>
+</div>
+<h2 class="text-xl font-bold tracking-tight">قهوتي <span class="text-primary">Qahwati</span></h2>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex flex-col items-end">
+<span class="text-sm font-semibold">فرع #01 - طرابلس</span>
+<span class="text-xs text-slate-500">نظام إدارة المبيعات</span>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center justify-center rounded-xl h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex items-center justify-center rounded-xl h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<div class="h-10 w-10 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center overflow-hidden">
+<img alt="Ahmed Profile" class="w-full h-full object-cover" data-alt="Profile avatar of Ahmed the cashier" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTHsTd5CFNI1ZdW_RSysijb1atA0v1wPDTAOg2-6Vc0wAnggLPUZw3J3WW4u9R361X_deeNk9THoiItYreaOE3tGns7KwVooIetDTXzDtfj4tnA53CmFiVPgKKkbwn8yjpboDQpV7AL9ifT6ErIkpe5er38i3vS4KF07WxICsvY2X5jEyydSlhw6FS1iNB83b8x5YVhZ2-Gf7MTFU3SUgyvs0I12bpR_Rm6zevHG7b68ikhoUfTwObCVhzD-1_-XcoZJgGUqIgQkY"/>
+</div>
+</div>
+</header>
+<main class="flex-1 px-6 py-8 lg:px-12 max-w-7xl mx-auto w-full">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+<div>
+<h1 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white">إدارة النقدية والوردية</h1>
+<p class="text-slate-500 dark:text-slate-400 mt-1">تتبع التدفقات المالية اليومية وتسوية الأرصدة عند نهاية الوردية.</p>
+</div>
+<button class="flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-primary/20 transition-all">
+<span class="material-symbols-outlined">lock</span>
+                    إغلاق الوردية الحالية
+                </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+<div class="flex items-center gap-4 rounded-xl p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">person</span>
+</div>
+<div>
+<p class="text-xs text-slate-500 dark:text-slate-400 font-medium">اسم الكاشير</p>
+<p class="text-lg font-bold">أحمد</p>
+</div>
+</div>
+<div class="flex items-center gap-4 rounded-xl p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">schedule</span>
+</div>
+<div>
+<p class="text-xs text-slate-500 dark:text-slate-400 font-medium">وقت البدء</p>
+<p class="text-lg font-bold">08:00 صباحاً</p>
+</div>
+</div>
+<div class="flex items-center gap-4 rounded-xl p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">timer</span>
+</div>
+<div>
+<p class="text-xs text-slate-500 dark:text-slate-400 font-medium">مدة الوردية</p>
+<p class="text-lg font-bold">06:30 ساعة</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">رصيد الافتتاح</p>
+<p class="text-2xl font-bold">500 <span class="text-sm font-normal text-slate-400">LYD</span></p>
+<span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 self-start">رصيد ثابت</span>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">مبيعات نقدية</p>
+<p class="text-2xl font-bold">850 <span class="text-sm font-normal text-slate-400">LYD</span></p>
+<span class="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 self-start">↑ 70%</span>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">مبيعات بطاقة</p>
+<p class="text-2xl font-bold">450 <span class="text-sm font-normal text-slate-400">LYD</span></p>
+<span class="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 self-start">↑ 90%</span>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">المصاريف</p>
+<p class="text-2xl font-bold text-red-500">-120 <span class="text-sm font-normal text-slate-400">LYD</span></p>
+<span class="text-xs font-semibold px-2 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-600 self-start">↓ 24%</span>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-primary text-white border border-primary shadow-lg shadow-primary/20 ring-4 ring-primary/10">
+<p class="text-white/80 text-sm font-medium">الرصيد المتوقع</p>
+<p class="text-3xl font-black">1,230 <span class="text-sm font-normal text-white/70">LYD</span></p>
+<span class="text-xs font-bold px-2 py-0.5 rounded bg-white/20 text-white self-start">المستهدف للتسوية</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+<div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
+<h3 class="font-bold text-lg">سجل المعاملات اليومية</h3>
+<div class="flex gap-2">
+<button class="text-xs font-bold bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-1.5 rounded-lg flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">filter_list</span> فلترة
+                        </button>
+<button class="text-xs font-bold bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-1.5 rounded-lg flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">download</span> تصدير CSV
+                        </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-right">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-sm uppercase tracking-wider font-semibold">
+<th class="px-6 py-4">الوقت</th>
+<th class="px-6 py-4">النوع</th>
+<th class="px-6 py-4">الوصف</th>
+<th class="px-6 py-4">المبلغ</th>
+<th class="px-6 py-4">الرصيد الجاري</th>
+<th class="px-6 py-4"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 text-sm font-medium">02:15 م</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> بيع (نقد)
+                                    </span>
+</td>
+<td class="px-6 py-4 text-sm">فاتورة رقم #TRX-9821</td>
+<td class="px-6 py-4 text-sm font-bold text-emerald-600">+45.00 LYD</td>
+<td class="px-6 py-4 text-sm font-bold">1,230.00 LYD</td>
+<td class="px-6 py-4 text-left">
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-primary transition-colors">more_vert</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 text-sm font-medium">01:40 م</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400">
+<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> مصروفات
+                                    </span>
+</td>
+<td class="px-6 py-4 text-sm">شراء مستلزمات تنظيف</td>
+<td class="px-6 py-4 text-sm font-bold text-red-500">-25.00 LYD</td>
+<td class="px-6 py-4 text-sm font-bold">1,185.00 LYD</td>
+<td class="px-6 py-4 text-left">
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-primary transition-colors">more_vert</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 text-sm font-medium">12:30 م</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> بيع (بطاقة)
+                                    </span>
+</td>
+<td class="px-6 py-4 text-sm">فاتورة رقم #TRX-9820</td>
+<td class="px-6 py-4 text-sm font-bold text-emerald-600">+120.00 LYD</td>
+<td class="px-6 py-4 text-sm font-bold">1,210.00 LYD</td>
+<td class="px-6 py-4 text-left">
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-primary transition-colors">more_vert</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 text-sm font-medium">11:15 ص</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> دخل آخر
+                                    </span>
+</td>
+<td class="px-6 py-4 text-sm">استرداد مبالغ مورد</td>
+<td class="px-6 py-4 text-sm font-bold text-blue-600">+50.00 LYD</td>
+<td class="px-6 py-4 text-sm font-bold">1,090.00 LYD</td>
+<td class="px-6 py-4 text-left">
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-primary transition-colors">more_vert</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 text-sm font-medium">08:00 ص</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> افتتاح
+                                    </span>
+</td>
+<td class="px-6 py-4 text-sm">رصيد بداية الوردية</td>
+<td class="px-6 py-4 text-sm font-bold text-slate-700 dark:text-slate-300">500.00 LYD</td>
+<td class="px-6 py-4 text-sm font-bold">500.00 LYD</td>
+<td class="px-6 py-4 text-left">
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-primary transition-colors">more_vert</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-sm text-slate-500 dark:text-slate-400 font-medium">
+<span>عرض 5 من أصل 42 معاملة اليوم</span>
+<div class="flex gap-2">
+<button class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 transition-all"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
+<button class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 transition-all bg-primary/10 border-primary/20 text-primary">1</button>
+<button class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 transition-all">2</button>
+<button class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 transition-all">3</button>
+<button class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 transition-all"><span class="material-symbols-outlined text-sm">chevron_left</span></button>
+</div>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+<div class="bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8">
+<div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-xl">
+<div class="w-32 h-32 flex flex-col items-center justify-center text-center">
+<span class="text-xs text-slate-400 mb-1">نسبة الدقة</span>
+<span class="text-4xl font-black text-primary">99.2%</span>
+<div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full mt-3 overflow-hidden">
+<div class="bg-primary h-full w-[99%]"></div>
+</div>
+</div>
+</div>
+<div class="flex-1 text-center md:text-right">
+<h4 class="text-xl font-bold mb-2">هل أنت مستعد للتسوية؟</h4>
+<p class="text-slate-600 dark:text-slate-400 mb-4 text-sm">تأكد من عد النقدية في الدرج ومطابقتها مع الرصيد المتوقع (1,230 LYD) قبل إغلاق الوردية.</p>
+<div class="flex gap-3 justify-center md:justify-start">
+<button class="bg-primary text-white px-6 py-2 rounded-lg font-bold text-sm">ابدأ العد اليدوي</button>
+<button class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-6 py-2 rounded-lg font-bold text-sm">طباعة تقرير</button>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+<h4 class="font-bold mb-4">ملخص الأداء (آخر 6 ساعات)</h4>
+<div class="space-y-4">
+<div class="flex justify-between items-center text-sm">
+<span class="text-slate-500">متوسط قيمة المعاملة</span>
+<span class="font-bold">32.50 LYD</span>
+</div>
+<div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+<div class="bg-blue-500 h-full w-[65%]"></div>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-slate-500">معدل المعاملات / الساعة</span>
+<span class="font-bold">12 فاتورة</span>
+</div>
+<div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+<div class="bg-amber-500 h-full w-[80%]"></div>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-slate-500">رضا العملاء (تقديري)</span>
+<span class="font-bold">4.8 / 5</span>
+</div>
+<div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full w-[92%]"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="mt-auto px-6 py-6 lg:px-12 border-t border-slate-200 dark:border-slate-800 text-slate-400 text-xs flex justify-between items-center bg-white dark:bg-slate-900">
+<p>© 2024 قهوتي لإدارة المقاهي والمطاعم. جميع الحقوق محفوظة.</p>
+<div class="flex gap-4">
+<a class="hover:text-primary" href="#">الدعم الفني</a>
+<a class="hover:text-primary" href="#">الشروط والأحكام</a>
+</div>
+</footer>
+</div>
+</body></html>
