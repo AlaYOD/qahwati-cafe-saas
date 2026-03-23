@@ -40,17 +40,49 @@ This project is built using an aggressive, cutting-edge technology stack designe
 
 The application is structured using Next.js App Router conventions. The `src/app` directory contains the core routes and screens for the SaaS application.
 
-### Key Modules / Pages
-* **`/landing-page`**: The public-facing marketing page and entry point for new customers.
-* **`/login-page` & `/login-screen`**: User authentication portals handled securely via NextAuth.
-* **`/main-dashboard` & `/dashboard`**: The central command center for cafe owners providing high-level analytics and overviews.
-* **`/pos-order-screen`**: The Point of Sale (POS) interface used by baristas/cashiers to process active customer orders.
-* **`/cash-register-and-shift-control`**: Operational management for tracking cash flows, shifts, and employee hours.
-* **`/inventory-management`**: Stock and supplier management to track ingredients and prevent shortages.
-* **`/table-management`**: Real-time table status tracking, useful for dine-in operations and mapping out floor plans.
+## 👥 User Roles & Endpoints
 
-### API Endpoints
-*Currently, the application heavily utilizes React Server Components and Server Actions. Dedicated `/api` REST/GraphQL endpoints are minimal as data mutations are handled directly via server-safe functions using Prisma.*
+The system implements a robust Role-Based Access Control (RBAC) model to ensure that staff, managers, and administrators have the appropriate tools for their specific responsibilities.
+
+### Role Overview
+| Role | Responsibility | Primary Interface |
+| :--- | :--- | :--- |
+| **Admin** | Full system control & financial oversight | `(dashboard)/admin` |
+| **Manager** | Operational oversight & inventory control | `manager` / `inventory-management` |
+| **Cashier** | Payment processing & shift management | `cashier/pos` |
+| **Waiter** | Table-side ordering & floorplan monitoring | `waiter` / `table-management` |
+| **Barista** | Order fulfillment & preparation | `barista` |
+
+### Key Endpoints by Role
+
+#### 🛡️ Administrator (`admin`)
+*   **Analytics**: `/admin/dashboard` — Live sales metrics & business trends.
+*   **Floorplan**: `/admin/tables` — Interactive table status & Waiter POS.
+*   **Operations**: `/admin/orders` — Order history & payment processing.
+*   **Catalog**: `/admin/menu` — Category and menu item management.
+*   **Staff**: `/admin/staff` — Profile management & role assignment.
+*   **Inventory**: `/admin/inventory` — Stock tracking & supplier management.
+*   **Reports**: `/admin/reports` — Detailed financial and sales analytics.
+
+#### 📋 Manager (`manager`)
+*   **Inventory**: `/inventory-management` — Direct stock level adjustments.
+*   **Tables**: `/table-management` — Layout control and table status.
+*   **Shifts**: `/cash-register-and-shift-control` — Managing employee shifts and registers.
+
+#### 💰 Cashier (`cashier`)
+*   **Checkout**: `/cashier/pos` — High-speed Retail POS for walk-ins.
+*   **Cash Flow**: `/cashier/cash-report` — Recording opening/closing balances.
+*   **Shifts**: `/cash-register-and-shift-control` — Closing the day's register.
+
+#### ☕ Barista & Service Staff
+*   **KDS**: `/barista` — Kitchen Display System for preparing orders.
+*   **Reference**: `/barista/menu` — Item availability and recipe browsing.
+*   **Ordering**: `/waiter/new-order` — Mobile-optimized ordering for waiters.
+
+### Common Routes
+*   **Public**: `/landing-page` — Marketing and onboarding.
+*   **Auth**: `/login` — Secure portal for all roles.
+*   **Switching**: `/select-role` — Workspace selection after login.
 
 ---
 

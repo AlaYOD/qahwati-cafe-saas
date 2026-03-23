@@ -1,8 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState } from 'react';
-import { CircleHelp, Eye, EyeOff, Loader2 } from 'lucide-react';
-import { createClient } from '@/utils/supabase/client';
+import { Eye, EyeOff, Loader2, Mail, Lock, LogIn } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
@@ -12,41 +10,31 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (error) throw error;
+      if (!res.ok) {
+        const { message } = await res.json().catch(() => ({ message: 'Login failed' }));
+        throw new Error(message);
+      }
 
       toast.success('Successfully logged in!');
-      router.push('/dashboard');
+      router.push('/main-dashboard');
       router.refresh();
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to login');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to login';
+      toast.error(message);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleSocialLogin = async (provider: 'google' | 'apple') => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      if (error) throw error;
-    } catch (error: any) {
-      toast.error(error.message || `Failed to login with ${provider}`);
     }
   };
 
@@ -55,15 +43,17 @@ export default function LoginScreen() {
       <div className="flex min-h-screen w-full">
         {/* Left Side: Coffee Illustration & Quote */}
         <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-primary/10">
-          <div className="absolute inset-0 bg-cover bg-center z-0 opacity-80" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2070&auto=format&fit=crop")' }}>
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-background-dark/80 via-background-dark/20 to-transparent z-10"></div>
+          <div
+            className="absolute inset-0 bg-cover bg-center z-0 opacity-80"
+            style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2070&auto=format&fit=crop")' }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background-dark/80 via-background-dark/20 to-transparent z-10" />
           <div className="relative z-20 flex flex-col justify-end p-20 w-full">
             <div className="max-w-md">
               <h2 className="text-4xl font-black text-white leading-tight mb-4 italic">
                 "Manage your coffee smartly"
               </h2>
-              <div className="h-1.5 w-20 bg-primary rounded-full"></div>
+              <div className="h-1.5 w-20 bg-primary rounded-full" />
               <p className="mt-6 text-slate-200 text-lg font-medium">
                 Elevate your daily ritual with precision and passion.
               </p>
@@ -78,7 +68,7 @@ export default function LoginScreen() {
             <div className="flex flex-col items-center lg:items-start space-y-4">
               <div className="flex items-center gap-3 text-primary">
                 <div className="size-10 flex items-center justify-center bg-primary/20 rounded-lg">
-                  <CircleHelp className="text-primary text-3xl" />
+                  <LogIn className="text-primary" size={22} />
                 </div>
                 <h1 className="text-2xl font-black tracking-tight dark:text-slate-100">Qahwati</h1>
               </div>
@@ -92,14 +82,16 @@ export default function LoginScreen() {
             <form className="mt-10 space-y-6" onSubmit={handleLogin}>
               <div className="space-y-4">
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold dark:text-slate-200 ml-1" htmlFor="email">Email Address</label>
+                  <label className="text-sm font-semibold dark:text-slate-200 ml-1" htmlFor="email">
+                    Email Address
+                  </label>
                   <div className="relative">
-                    <CircleHelp className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
-                    <input 
-                      className="w-full pl-12 pr-4 py-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all" 
-                      id="email" 
-                      placeholder="name@example.com" 
-                      type="email" 
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <input
+                      className="w-full pl-12 pr-4 py-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                      id="email"
+                      placeholder="name@example.com"
+                      type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -108,38 +100,48 @@ export default function LoginScreen() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <div className="flex justify-between items-center px-1">
-                    <label className="text-sm font-semibold dark:text-slate-200" htmlFor="password">Password</label>
-                    <a className="text-xs font-bold text-primary hover:underline" href="#">Forgot password?</a>
+                    <label className="text-sm font-semibold dark:text-slate-200" htmlFor="password">
+                      Password
+                    </label>
+                    <a className="text-xs font-bold text-primary hover:underline" href="#">
+                      Forgot password?
+                    </a>
                   </div>
                   <div className="relative">
-                    <CircleHelp className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
-                    <input 
-                      className="w-full pl-12 pr-12 py-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all" 
-                      id="password" 
-                      placeholder="••••••••" 
-                      type={showPassword ? "text" : "password"} 
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <input
+                      className="w-full pl-12 pr-12 py-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                      id="password"
+                      placeholder="••••••••"
+                      type={showPassword ? 'text' : 'password'}
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
-                    <button 
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors" 
+                    <button
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors"
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? <EyeOff className="text-xl" /> : <Eye className="text-xl" />}
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center px-1">
-                <input className="size-4 rounded border-slate-300 text-primary focus:ring-primary bg-transparent" id="remember" type="checkbox" />
-                <label className="ml-2 text-sm text-slate-600 dark:text-slate-400 font-medium" htmlFor="remember">Remember me for 30 days</label>
+                <input
+                  className="size-4 rounded border-slate-300 text-primary focus:ring-primary bg-transparent"
+                  id="remember"
+                  type="checkbox"
+                />
+                <label className="ml-2 text-sm text-slate-600 dark:text-slate-400 font-medium" htmlFor="remember">
+                  Remember me for 30 days
+                </label>
               </div>
 
-              <button 
-                className="w-full py-4 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" 
+              <button
+                className="w-full py-4 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 type="submit"
                 disabled={isLoading}
               >
@@ -151,46 +153,17 @@ export default function LoginScreen() {
                 ) : (
                   <>
                     <span>Login</span>
-                    <CircleHelp className="text-lg" />
+                    <LogIn size={18} />
                   </>
                 )}
               </button>
             </form>
 
-            {/* Social Login */}
-            <div className="relative py-4">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200 dark:border-slate-800"></div>
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background-light dark:bg-background-dark px-4 text-slate-500 font-bold">Or continue with</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <button 
-                onClick={() => handleSocialLogin('google')}
-                className="flex items-center justify-center gap-2 py-3 px-4 border border-slate-200 dark:border-slate-800 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors font-semibold text-sm"
-              >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05" />
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 12-4.53z" fill="#EA4335" />
-                </svg>
-                Google
-              </button>
-              <button 
-                onClick={() => handleSocialLogin('apple')}
-                className="flex items-center justify-center gap-2 py-3 px-4 border border-slate-200 dark:border-slate-800 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors font-semibold text-sm"
-              >
-                <CircleHelp className="text-xl" />
-                Apple
-              </button>
-            </div>
             <p className="text-center text-sm text-slate-500 dark:text-slate-400">
-              Don't have an account? 
-              <a className="text-primary font-bold hover:underline" href="#">Sign up for free</a>
+              Don&apos;t have an account?{' '}
+              <a className="text-primary font-bold hover:underline" href="#">
+                Sign up for free
+              </a>
             </p>
           </div>
         </div>
@@ -198,4 +171,3 @@ export default function LoginScreen() {
     </div>
   );
 }
-

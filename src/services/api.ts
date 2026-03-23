@@ -1,100 +1,126 @@
-import { createClient } from '@/utils/supabase/client';
+/**
+ * API service layer.
+ * All functions call Next.js API routes (/api/*).
+ * Implement the corresponding route handlers in src/app/api/ to connect a database.
+ */
+
+const BASE = '/api';
+
+async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(`${BASE}${path}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
+  if (!res.ok) {
+    const message = await res.text().catch(() => res.statusText);
+    throw new Error(message || `Request failed: ${res.status}`);
+  }
+  return res.json();
+}
 
 export const api = {
   // Categories
-  async getCategories(type?: 'menu' | 'inventory') {
-    const supabase = createClient();
-    let query = supabase.from('categories').select('*');
-    if (type) {
-      query = query.eq('type', type);
-    }
-    const { data, error } = await query;
-    if (error) throw error;
-    return data;
+  getCategories(type?: 'menu' | 'inventory') {
+    const params = type ? `?type=${type}` : '';
+    return request<{ id: string; name: string; type: string }[]>(`/categories${params}`);
   },
 
   // Menu Items
-  async getMenuItems(categoryId?: string) {
-    const supabase = createClient();
-    let query = supabase.from('menu_items').select('*, categories(*)');
-    if (categoryId && categoryId !== 'all') {
-      query = query.eq('category_id', categoryId);
-    }
-    const { data, error } = await query;
-    if (error) throw error;
-    return data;
+  getMenuItems(categoryId?: string) {
+    const params = categoryId && categoryId !== 'all' ? `?category_id=${categoryId}` : '';
+    return request<{
+      id: string;
+      name: string;
+      price: number;
+      description: string | null;
+      image_url: string | null;
+      is_available: boolean | null;
+      category_id: string | null;
+    }[]>(`/menu-items${params}`);
   },
 
   // Inventory Items
-  async getInventoryItems() {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('inventory_items').select('*');
-    if (error) throw error;
-    return data;
+  getInventoryItems() {
+    return request<{
+      id: string;
+      name: string;
+      category: string;
+      unit: string;
+      quantity: number;
+      min_level: number;
+      cost_per_unit: number;
+    }[]>('/inventory-items');
   },
 
-  async addInventoryItem(item: any) {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('inventory_items').insert([item]).select();
-    if (error) throw error;
-    return data[0];
+  addInventoryItem(item: {
+    name: string;
+    category: string;
+    unit: string;
+    quantity?: number;
+    min_level?: number;
+    cost_per_unit?: number;
+  }) {
+    return request('/inventory-items', { method: 'POST', body: JSON.stringify(item) });
   },
 
-  async updateInventoryItem(id: string, updates: any) {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('inventory_items').update(updates).eq('id', id).select();
-    if (error) throw error;
-    return data[0];
+  updateInventoryItem(id: string, updates: Partial<{
+    name: string;
+    category: string;
+    unit: string;
+    quantity: number;
+    min_level: number;
+    cost_per_unit: number;
+  }>) {
+    return request(`/inventory-items/${id}`, { method: 'PATCH', body: JSON.stringify(updates) });
   },
 
   // Tables
-  async getTables() {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('tables').select('*');
-    if (error) throw error;
-    return data;
+  getTables() {
+    return request<{
+      id: string;
+      name: string;
+      capacity: number;
+      status: string;
+      zone: string;
+    }[]>('/tables');
   },
 
-  async updateTableStatus(id: string, status: string) {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('tables').update({ status }).eq('id', id).select();
-    if (error) throw error;
-    return data[0];
+  updateTableStatus(id: string, status: string) {
+    return request(`/tables/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) });
   },
 
   // Orders
-  async createOrder(orderData: any, items: any[]) {
-    const supabase = createClient();
-    // Insert order
-    const { data: order, error: orderError } = await supabase.from('orders').insert([orderData]).select().single();
-    if (orderError) throw orderError;
-
-    // Insert items
-    const orderItems = items.map(item => ({
-      order_id: order.id,
-      menu_item_id: item.menu_item_id,
-      quantity: item.quantity,
-      unit_price: item.price
-    }));
-
-    const { error: itemsError } = await supabase.from('order_items').insert(orderItems);
-    if (itemsError) throw itemsError;
-
-    return order;
+  createOrder(
+    orderData: {
+      total_amount: number;
+      status: string;
+      payment_method: string;
+      table_id?: string;
+    },
+    items: { menu_item_id: string; quantity: number; price: number }[]
+  ) {
+    return request('/orders', { method: 'POST', body: JSON.stringify({ order: orderData, items }) });
   },
 
-  // Shifts and Transactions
-  async getActiveShift() {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('shifts').select('*').eq('status', 'open').order('created_at', { ascending: false }).limit(1).single();
-    if (error && error.code !== 'PGRST116') throw error; // PGRST116 is no rows
-    return data;
+  // Shifts
+  getActiveShift() {
+    return request<{
+      id: string;
+      opening_balance: number;
+      expected_balance: number;
+      actual_balance: number | null;
+      status: string;
+      start_time: string | null;
+    } | null>('/shifts/active');
   },
 
-  async getTransactions(shiftId: string) {
-    const supabase = createClient();
-    const { data, error } = await supabase.from('transactions').select('*').eq('shift_id', shiftId).order('created_at', { ascending: false });
-    if (error) throw error;
-    return data;
-  }
+  getTransactions(shiftId: string) {
+    return request<{
+      id: string;
+      amount: number;
+      type: string;
+      description: string | null;
+      created_at: string | null;
+    }[]>(`/shifts/${shiftId}/transactions`);
+  },
 };

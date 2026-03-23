@@ -59,19 +59,19 @@ export default function LoginPage() {
 <h2 className="text-slate-900 dark:text-slate-100 text-3xl font-bold mb-2">Welcome Back</h2>
 <p className="text-slate-500 dark:text-slate-400">Log in to manage your café operations</p>
 </div>
-<form className="space-y-6">
+<form className="space-y-6" suppressHydrationWarning>
 <div>
 <label className="block text-slate-700 dark:text-slate-300 text-sm font-semibold mb-2">Email Address</label>
 <div className="relative">
 <CircleHelp className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-<input className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all dark:text-white" placeholder="name@cafe.com" type="email" />
+<input suppressHydrationWarning className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all dark:text-white" placeholder="name@cafe.com" type="email" />
 </div>
 </div>
 <div>
 <label className="block text-slate-700 dark:text-slate-300 text-sm font-semibold mb-2">Password</label>
 <div className="relative">
 <CircleHelp className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-<input className="w-full pl-12 pr-12 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all dark:text-white" placeholder="••••••••" type="password" />
+<input suppressHydrationWarning className="w-full pl-12 pr-12 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all dark:text-white" placeholder="••••••••" type="password" />
 <button className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors" type="button">
 <Eye  />
 </button>
@@ -85,7 +85,7 @@ export default function LoginPage() {
 <a className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors" href="#">Forgot password?</a>
 </div>
 <div className="space-y-4 pt-2">
-<button className="w-full bg-primary text-white font-bold py-4 rounded-lg shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all flex items-center justify-center gap-2" type="submit">
+<button suppressHydrationWarning className="w-full bg-primary text-white font-bold py-4 rounded-lg shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all flex items-center justify-center gap-2" type="submit">
 <span>Sign In</span>
 <CircleHelp className="text-sm" />
 </button>
