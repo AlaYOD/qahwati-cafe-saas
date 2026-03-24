@@ -26,3 +26,24 @@ export async function createStaffProfile(data: { full_name: string, role: string
     return { success: false, error: error.message };
   }
 }
+
+export async function updateStaffProfile(id: string, data: { full_name: string, role: string }) {
+  try {
+    const updated = await prisma.profiles.update({
+      where: { id },
+      data: { full_name: data.full_name, role: data.role }
+    });
+    return { success: true, staff: serializePrisma(updated) };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteStaffProfile(id: string) {
+  try {
+    await prisma.profiles.delete({ where: { id } });
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}

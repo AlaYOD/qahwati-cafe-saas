@@ -13,6 +13,10 @@ export default function AdminOrdersPage() {
   // Status Filter state
   const [filter, setFilter] = useState<string>("all");
 
+  // Table Filter state
+  const [tableFilter, setTableFilter] = useState<string>("all");
+  const [tableSearch, setTableSearch] = useState<string>("");
+
   // Checkout Modal State
   const [checkoutOrder, setCheckoutOrder] = useState<any | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>("card");
@@ -46,7 +50,33 @@ export default function AdminOrdersPage() {
     setIsUpdating(null);
   };
 
-  const filteredOrders = orders?.filter(o => filter === "all" || o.status === filter) || [];
+  // Unique sorted tables from loaded orders
+  const allTables = Array.from(
+    new Map(
+      (orders || [])
+        .filter(o => o.table)
+        .map(o => [o.table.id, o.table])
+    ).values()
+  ).sort((a: any, b: any) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+
+  const filteredOrders = (orders || []).filter(o => {
+    const matchStatus = filter === "all" || o.status === filter;
+
+    const matchTable = (() => {
+      if (tableFilter === "all") {
+        // text search: bare number or partial name
+        if (!tableSearch.trim()) return true;
+        const q = tableSearch.toLowerCase();
+        const name = (o.table?.name || o.customer_name || "walk-in").toLowerCase();
+        const numOnly = tableSearch.replace(/\D/g, "");
+        return name.includes(q) || (numOnly ? name.includes(numOnly) : false);
+      }
+      if (tableFilter === "walkin") return !o.table;
+      return o.table?.id === tableFilter;
+    })();
+
+    return matchStatus && matchTable;
+  });
 
   return (
     <div className="p-8 space-y-6 max-w-7xl mx-auto w-full relative">
@@ -64,31 +94,113 @@ export default function AdminOrdersPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
          {/* Sidebar Navigation */}
-         <div className="md:col-span-1 border border-slate-200 dark:border-primary/20 bg-white dark:bg-background-dark p-4 rounded-xl shadow-sm h-fit">
-            <h3 className="font-bold text-sm text-slate-500 uppercase tracking-wider mb-4 px-2">Order Status</h3>
-            <nav className="space-y-1">
-               {[
-                 { id: "all", label: "All Orders", icon: "receipt_long" },
-                 { id: "pending", label: "Pending", icon: "pending_actions" },
-                 { id: "completed", label: "Completed", icon: "check_circle" },
-                 { id: "cancelled", label: "Cancelled", icon: "cancel" }
-               ].map(opt => {
-                 const count = orders?.filter(o => opt.id === "all" ? true : o.status === opt.id).length || 0;
-                 return (
-                   <button 
-                     key={opt.id} 
-                     onClick={() => setFilter(opt.id)}
-                     className={`w-full text-left px-3 py-2 rounded-lg text-sm flex justify-between items-center transition-colors ${filter === opt.id ? "bg-primary text-white font-bold" : "text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-50 dark:hover:bg-primary/5 bg-transparent"}`}
-                   >
+         <div className="md:col-span-1 space-y-4 h-fit">
+
+            {/* Status filter */}
+            <div className="border border-slate-200 dark:border-primary/20 bg-white dark:bg-background-dark p-4 rounded-xl shadow-sm">
+               <h3 className="font-bold text-sm text-slate-500 uppercase tracking-wider mb-3 px-2">Order Status</h3>
+               <nav className="space-y-1">
+                  {[
+                    { id: "all", label: "All Orders", icon: "receipt_long" },
+                    { id: "pending", label: "Pending", icon: "pending_actions" },
+                    { id: "completed", label: "Completed", icon: "check_circle" },
+                    { id: "cancelled", label: "Cancelled", icon: "cancel" }
+                  ].map(opt => {
+                    const count = orders?.filter(o => opt.id === "all" ? true : o.status === opt.id).length || 0;
+                    return (
+                      <button
+                        key={opt.id}
+                        onClick={() => setFilter(opt.id)}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-sm flex justify-between items-center transition-colors ${filter === opt.id ? "bg-primary text-white font-bold" : "text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-50 dark:hover:bg-primary/5 bg-transparent"}`}
+                      >
+                        <div className="flex items-center gap-2">
+                           <span className="material-symbols-outlined text-[18px]">{opt.icon}</span>
+                           <span>{opt.label}</span>
+                        </div>
+                        <span className={`${filter === opt.id ? "bg-white/20" : "bg-slate-100 dark:bg-primary/10"} text-xs px-2 py-0.5 rounded-full`}>{count}</span>
+                      </button>
+                    )
+                  })}
+               </nav>
+            </div>
+
+            {/* Table filter */}
+            <div className="border border-slate-200 dark:border-primary/20 bg-white dark:bg-background-dark p-4 rounded-xl shadow-sm">
+               <div className="flex items-center justify-between mb-3 px-2">
+                  <h3 className="font-bold text-sm text-slate-500 uppercase tracking-wider">Filter by Table</h3>
+                  {(tableFilter !== "all" || tableSearch) && (
+                     <button
+                        onClick={() => { setTableFilter("all"); setTableSearch(""); }}
+                        className="text-xs text-primary hover:underline font-semibold"
+                     >
+                        Clear
+                     </button>
+                  )}
+               </div>
+
+               {/* Search input */}
+               <div className="relative mb-3">
+                  <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                     <span className="material-symbols-outlined text-slate-400 text-sm">search</span>
+                  </span>
+                  <input
+                     value={tableSearch}
+                     onChange={e => { setTableSearch(e.target.value); setTableFilter("all"); }}
+                     placeholder="Table name or number…"
+                     className="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 dark:bg-primary/5 border border-slate-200 dark:border-primary/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+               </div>
+
+               {/* Table list */}
+               <nav className="space-y-1 max-h-64 overflow-y-auto">
+                  <button
+                     onClick={() => { setTableFilter("all"); setTableSearch(""); }}
+                     className={`w-full text-left px-3 py-2 rounded-lg text-sm flex justify-between items-center transition-colors ${tableFilter === "all" && !tableSearch ? "bg-primary text-white font-bold" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-primary/5"}`}
+                  >
                      <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[18px]">{opt.icon}</span>
-                        <span>{opt.label}</span>
+                        <span className="material-symbols-outlined text-[18px]">table_restaurant</span>
+                        All Tables
                      </div>
-                     <span className={`${filter === opt.id ? "bg-white/20" : "bg-slate-100 dark:bg-primary/10"} text-xs px-2 py-0.5 rounded-full`}>{count}</span>
-                   </button>
-                 )
-               })}
-            </nav>
+                     <span className={`text-xs px-2 py-0.5 rounded-full ${tableFilter === "all" && !tableSearch ? "bg-white/20" : "bg-slate-100 dark:bg-primary/10"}`}>
+                        {orders?.length || 0}
+                     </span>
+                  </button>
+
+                  <button
+                     onClick={() => { setTableFilter("walkin"); setTableSearch(""); }}
+                     className={`w-full text-left px-3 py-2 rounded-lg text-sm flex justify-between items-center transition-colors ${tableFilter === "walkin" ? "bg-primary text-white font-bold" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-primary/5"}`}
+                  >
+                     <div className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[18px]">directions_walk</span>
+                        Takeaway
+                     </div>
+                     <span className={`text-xs px-2 py-0.5 rounded-full ${tableFilter === "walkin" ? "bg-white/20" : "bg-slate-100 dark:bg-primary/10"}`}>
+                        {orders?.filter(o => !o.table).length || 0}
+                     </span>
+                  </button>
+
+                  {allTables.map((table: any) => {
+                     const count = orders?.filter(o => o.table?.id === table.id).length || 0;
+                     const isActive = tableFilter === table.id;
+                     return (
+                        <button
+                           key={table.id}
+                           onClick={() => { setTableFilter(table.id); setTableSearch(""); }}
+                           className={`w-full text-left px-3 py-2 rounded-lg text-sm flex justify-between items-center transition-colors ${isActive ? "bg-primary text-white font-bold" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-primary/5"}`}
+                        >
+                           <div className="flex items-center gap-2 min-w-0">
+                              <span className="material-symbols-outlined text-[18px] flex-none">chair</span>
+                              <span className="truncate">{table.name}</span>
+                           </div>
+                           <span className={`text-xs px-2 py-0.5 rounded-full flex-none ml-1 ${isActive ? "bg-white/20" : "bg-slate-100 dark:bg-primary/10"}`}>
+                              {count}
+                           </span>
+                        </button>
+                     );
+                  })}
+               </nav>
+            </div>
+
          </div>
 
          {/* Main Grid */}
@@ -122,7 +234,7 @@ export default function AdminOrdersPage() {
                               </div>
                               <div className="flex items-center text-sm">
                                  <span className="material-symbols-outlined text-[18px] text-slate-400 mr-2">vpn_key</span>
-                                 <span className="font-medium text-slate-600 dark:text-slate-400">{order.customer_name || order.profile?.full_name || 'Walk-in Customer'}</span>
+                                 <span className="font-medium text-slate-600 dark:text-slate-400">{order.customer_name || order.profile?.full_name || 'Takeaway Customer'}</span>
                               </div>
                             </div>
                           </div>
@@ -199,7 +311,20 @@ export default function AdminOrdersPage() {
                      <span className="material-symbols-outlined text-3xl">receipt_long</span>
                    </div>
                    <h3 className="text-xl font-bold mb-2">No Orders Found</h3>
-                   <p className="text-slate-500">There are no orders matching this status currently.</p>
+                   <p className="text-slate-500">
+                     {tableFilter !== "all" || tableSearch
+                       ? `No orders match the selected table${filter !== "all" ? ` and "${filter}" status` : ""}.`
+                       : "There are no orders matching this status currently."
+                     }
+                   </p>
+                   {(tableFilter !== "all" || tableSearch) && (
+                     <button
+                       onClick={() => { setTableFilter("all"); setTableSearch(""); }}
+                       className="mt-4 text-sm text-primary font-semibold hover:underline"
+                     >
+                       Clear table filter
+                     </button>
+                   )}
                 </div>
               )
             ) : (
@@ -231,7 +356,7 @@ export default function AdminOrdersPage() {
                     </div>
                     <div className="flex justify-between">
                        <span className="text-slate-500">Customer</span>
-                       <span className="font-medium">{checkoutOrder.customer_name || checkoutOrder.profile?.full_name || 'Walk-in'}</span>
+                       <span className="font-medium">{checkoutOrder.customer_name || checkoutOrder.profile?.full_name || 'Takeaway'}</span>
                     </div>
                     {checkoutOrder.table && (
                        <div className="flex justify-between">
