@@ -1,25 +1,46 @@
 "use client";
 
 import { useAuth } from "@/lib/auth/auth-context";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export function TopHeader() {
   const { user } = useAuth();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   if (!user) return null;
 
   return (
-    <header className="sticky top-0 z-10 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-primary/10 px-8 py-6">
+    <header className="sticky top-0 z-10 bg-white/90 dark:bg-background/90 backdrop-blur-md border-b border-slate-200 dark:border-primary/10 px-8 py-4">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white capitalize">Hello {user.full_name?.split(' ')[0] || "User"}, here is today summary</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Real-time performance overview for your coffee shop.</p>
+          <h2 className="text-xl font-black text-navy-800 dark:text-white uppercase tracking-tight">System Terminal: {user.full_name?.split(' ')[0] || "Operator"},</h2>
+          <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Operational status & performance stream.</p>
         </div>
-        <div className="flex gap-3">
-          <button className="p-2 rounded-lg border border-slate-200 dark:border-primary/30 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary/10 transition-colors">
-            <span className="material-symbols-outlined">notifications</span>
+        <div className="flex gap-4">
+          <button 
+             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+             className="p-2.5 rounded-pill border border-slate-200 dark:border-primary/20 text-slate-500 hover:bg-slate-50 dark:hover:bg-primary/5 transition-all flex items-center justify-center min-w-[45px]"
+          >
+            {mounted && (
+               <span className="material-symbols-outlined text-[20px]">
+                 {theme === 'dark' ? 'light_mode' : 'dark_mode'}
+               </span>
+            )}
           </button>
-          <button className="px-4 py-2 bg-primary text-white rounded-lg flex items-center gap-2 hover:opacity-90 transition-opacity">
-            <span className="material-symbols-outlined text-sm">add</span>
-            <span className="text-sm font-medium">New Order</span>
+          
+          <button className="p-2.5 rounded-pill border border-slate-200 dark:border-primary/20 text-slate-500 hover:bg-slate-50 dark:hover:bg-primary/5 transition-all">
+            <span className="material-symbols-outlined text-[20px]">notifications</span>
+          </button>
+          
+          <button className="px-6 py-2.5 bg-primary text-white rounded-pill flex items-center gap-2 hover:bg-primary/90 transition-all font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/25">
+            <span className="material-symbols-outlined text-[18px]">add</span>
+            Launch Operation
           </button>
         </div>
       </div>

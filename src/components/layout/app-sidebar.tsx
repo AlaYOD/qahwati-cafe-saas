@@ -27,10 +27,13 @@ const MENUS = {
     { name: "Reports", href: "/manager/reports", icon: "bar_chart" },
   ],
   cashier: [
-    { name: "POS", href: "/cashier/pos", icon: "point_of_sale" },
+    { name: "Dashboard", href: "/cashier/dashboard", icon: "dashboard" },
+    { name: "Tables", href: "/cashier/tables", icon: "table_restaurant" },
+    { name: "Staff", href: "/cashier/staff", icon: "badge" },
+    { name: "Menu", href: "/cashier/menu", icon: "restaurant_menu" },
+    { name: "Inventory", href: "/cashier/inventory", icon: "inventory_2" },
     { name: "Orders", href: "/cashier/orders", icon: "receipt_long" },
-    { name: "Daily Cash", href: "/cashier/cash-report", icon: "account_balance_wallet" },
-    { name: "Receipts", href: "/cashier/receipts", icon: "receipt" },
+    { name: "Reports", href: "/cashier/reports", icon: "bar_chart" },
   ],
   barista: [
     { name: "Active Orders", href: "/barista/orders", icon: "local_cafe" },
@@ -72,14 +75,17 @@ export function AppSidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
+                "flex items-center gap-3 px-4 py-2.5 rounded-pill transition-all duration-300 group",
                 isActive
-                  ? "bg-primary text-white"
-                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-primary/10 hover:text-primary"
+                  ? "bg-primary text-white shadow-lg shadow-primary/20"
+                  : "text-navy-800 dark:text-slate-300 hover:bg-accent hover:text-primary"
               )}
             >
-              <span className="material-symbols-outlined">{item.icon}</span>
-              <span className="text-sm font-medium">{item.name}</span>
+              <span className={cn(
+                "material-symbols-outlined transition-transform duration-300 group-hover:scale-110",
+                isActive ? "text-white" : "text-slate-400 group-hover:text-primary"
+              )}>{item.icon}</span>
+              <span className="text-sm font-bold tracking-tight">{item.name}</span>
             </Link>
           );
         })}

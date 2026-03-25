@@ -54,6 +54,7 @@ const USERS = [
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 async function resolveAuthId(email: string, password: string): Promise<string> {
+  // 1. Try to create the user
   const { data, error } = await supabase.auth.admin.createUser({
     email,
     password,
@@ -62,13 +63,23 @@ async function resolveAuthId(email: string, password: string): Promise<string> {
 
   if (!error) return data.user.id;
 
+  // 2. If user exists, find them and UPDATE their password to match this seeder
   if (error.message.toLowerCase().includes('already been registered') ||
       error.message.toLowerCase().includes('already exists')) {
-    // User exists — find their ID
+    
     const { data: list, error: listErr } = await supabase.auth.admin.listUsers({ perPage: 1000 });
     if (listErr || !list) throw new Error(`Cannot list users: ${listErr?.message}`);
+    
     const found = list.users.find((u) => u.email === email);
     if (!found) throw new Error(`Auth user exists for ${email} but could not be found in list`);
+
+    // Force update the password for the existing user
+    const { error: updateError } = await supabase.auth.admin.updateUserById(found.id, {
+      password: password
+    });
+
+    if (updateError) throw new Error(`Failed to update password for ${email}: ${updateError.message}`);
+
     return found.id;
   }
 
