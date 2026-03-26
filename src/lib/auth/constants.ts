@@ -5,8 +5,8 @@ import type { Role } from './types'
 // ─────────────────────────────────────────────
 export const ROLE_DEFAULT_ROUTES: Record<string, string> = {
   admin:   '/admin/dashboard',
-  manager: '/manager/inventory',
-  cashier: '/cashier/pos',
+  manager: '/manager/dashboard',
+  cashier: '/cashier/cash-register',
   barista: '/barista/orders',
   waiter:  '/waiter/tables',
   staff:   '/select-role',

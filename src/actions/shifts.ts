@@ -88,6 +88,70 @@ export async function closeShift(shiftId: string, actualBalance: number) {
   }
 }
 
+/**
+ * Cash-Out Subsystem
+ * Records a cash withdrawal from the active drawer.
+ *
+ * Sub-types (stored as type = 'cash_out', reason embedded in description):
+ *   - paid_out   : business expense paid directly from drawer (supplies, delivery, etc.)
+ *   - safe_drop  : excess cash moved to the safe for security
+ *   - advance    : cashier personal advance against wages
+ *   - other      : any other authorised removal
+ *
+ * Effect on balance:
+ *   expectedBalance = openBal + cashSales + income - expenses - cashOuts
+ */
+export async function cashOutFromDrawer(data: {
+  shiftId: string;
+  amount: number;
+  subType: "paid_out" | "safe_drop" | "advance" | "other";
+  reason: string;
+  reference?: string;
+}) {
+  try {
+    if (data.amount <= 0) {
+      return { success: false, error: "Amount must be greater than zero." };
+    }
+
+    const shift = await prisma.shifts.findUnique({ where: { id: data.shiftId } });
+    if (!shift || shift.status !== "open") {
+      return { success: false, error: "No active shift found." };
+    }
+
+    // Build an auditable description
+    const subTypeLabels: Record<string, string> = {
+      paid_out:  "Paid Out",
+      safe_drop: "Safe Drop",
+      advance:   "Cash Advance",
+      other:     "Other",
+    };
+    const refPart = data.reference ? ` [Ref: ${data.reference}]` : "";
+    const description = `[${subTypeLabels[data.subType]}]${refPart} ${data.reason}`.trim();
+
+    const tx = await prisma.transactions.create({
+      data: {
+        shift_id: data.shiftId,
+        amount:   data.amount,
+        type:     "cash_out",
+        description,
+      },
+    });
+
+    return { success: true, transaction: serializePrisma(tx) };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+/** Quick check — returns true if any shift is currently open */
+export async function hasOpenShift(): Promise<boolean> {
+  const shift = await prisma.shifts.findFirst({
+    where: { status: "open" },
+    select: { id: true },
+  });
+  return !!shift;
+}
+
 export async function addTransaction(shiftId: string, amount: number, type: string, description?: string) {
   try {
     const tx = await prisma.transactions.create({
@@ -97,4 +161,18 @@ export async function addTransaction(shiftId: string, amount: number, type: stri
   } catch (error: any) {
     return { success: false, error: error.message };
   }
+}
+
+export async function getCashOutAlerts() {
+  const alerts = await prisma.transactions.findMany({
+    where: { type: "cash_out" },
+    orderBy: { created_at: "desc" },
+    take: 20,
+    include: {
+      shift: {
+        include: { profile: { select: { full_name: true } } },
+      },
+    },
+  });
+  return serializePrisma(alerts);
 }

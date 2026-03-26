@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { getAdminTablesData, createTable } from "@/actions/tables";
 import { getAdminMenuData } from "@/actions/menu";
 import { createOrder, updateOrder, deleteOrder } from "@/actions/orders";
+import { hasOpenShift } from "@/actions/shifts";
 import { useAuth } from "@/lib/auth/auth-context";
+import Link from "next/link";
 
 export default function CashierTablesPage() {
   const { user } = useAuth();
@@ -29,15 +31,20 @@ export default function CashierTablesPage() {
   const [isPosSubmitting, setIsPosSubmitting] = useState(false);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>("all");
 
+  // Shift guard
+  const [shiftActive, setShiftActive] = useState<boolean | null>(null);
+
   const fetchData = async () => {
     try {
-      const [tablesRes, menuRes] = await Promise.all([
+      const [tablesRes, menuRes, shiftOpen] = await Promise.all([
          getAdminTablesData(),
-         getAdminMenuData()
+         getAdminMenuData(),
+         hasOpenShift()
       ]);
       setTables(tablesRes);
       setCategories(menuRes.categories);
       setMenuItems(menuRes.menuItems);
+      setShiftActive(shiftOpen);
     } catch (err) {
       console.error(err);
     }
@@ -178,6 +185,28 @@ export default function CashierTablesPage() {
         </div>
       </div>
 
+      {/* No Active Shift Warning */}
+      {shiftActive === false && (
+        <div className="flex items-center gap-4 p-4 rounded-xl border-2 border-amber-300 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/10 animate-in fade-in duration-300">
+          <div className="size-12 rounded-xl bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center flex-none">
+            <span className="material-symbols-outlined text-2xl text-amber-600 dark:text-amber-400">warning</span>
+          </div>
+          <div className="flex-grow">
+            <h3 className="font-bold text-amber-800 dark:text-amber-300">No Active Shift</h3>
+            <p className="text-sm text-amber-700 dark:text-amber-400/80 mt-0.5">
+              You must open a shift in the Cash Register before creating any orders.
+            </p>
+          </div>
+          <Link
+            href="/cashier/cash-register"
+            className="flex-none inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 text-white hover:bg-amber-700 transition-all text-sm font-bold shadow-lg shadow-amber-600/20"
+          >
+            <span className="material-symbols-outlined text-[18px]">point_of_sale</span>
+            Open Shift
+          </Link>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {tables ? tables.map(table => {
            const isOccupied = table.status === 'occupied';
@@ -253,11 +282,13 @@ export default function CashierTablesPage() {
                        <span className="material-symbols-outlined text-[18px]">edit_note</span> Manage Tab
                     </button>
                   ) : (
-                    <button 
-                       onClick={() => openOrderModal(table, null)} 
-                       className="w-full py-2 bg-white dark:bg-background-dark border border-slate-200 dark:border-primary/20 text-primary rounded-lg text-sm font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2"
+                    <button
+                       onClick={() => shiftActive ? openOrderModal(table, null) : null}
+                       disabled={!shiftActive}
+                       title={!shiftActive ? "Open a shift first" : undefined}
+                       className={`w-full py-2 rounded-lg text-sm font-bold transition-colors flex items-center justify-center gap-2 ${shiftActive ? 'bg-white dark:bg-background-dark border border-slate-200 dark:border-primary/20 text-primary hover:bg-primary/5' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed border border-slate-200 dark:border-slate-700'}`}
                     >
-                       <span className="material-symbols-outlined text-[18px]">add_circle</span> Add Order
+                       <span className="material-symbols-outlined text-[18px]">{shiftActive ? 'add_circle' : 'lock'}</span> {shiftActive ? 'Add Order' : 'Shift Required'}
                     </button>
                   )}
                </div>

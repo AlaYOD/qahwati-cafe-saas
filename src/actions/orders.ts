@@ -78,6 +78,12 @@ export async function createOrder(data: {
   items: { menu_item_id: string, quantity: number, unit_price: number }[];
 }) {
   try {
+    // 0. Require an active (open) shift before creating orders
+    const activeShift = await prisma.shifts.findFirst({ where: { status: "open" } });
+    if (!activeShift) {
+      return { success: false, error: "No active shift. Please open a shift in Cash Register before creating orders." };
+    }
+
     // 1. Transaction to guarantee safety
     const result = await prisma.$transaction(async (tx) => {
       // 2. Lock Table check
